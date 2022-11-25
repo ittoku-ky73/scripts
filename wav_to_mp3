@@ -1,0 +1,27 @@
+#!/usr/bin/ruby
+# frozen_string_literal: true
+
+# wavディレクトリにあるwavファイルをmp3に変換するスクリプト
+# このコマンドを実行するには以下の条件をクリアする必要があります
+#
+# # ffmpegがインストールされていること
+# # wavとmp3ディレクトリを用意すること
+#
+# 上記の用意ができたら以下のコマンドを実行する
+# usage: ./wav_to_mp3
+
+def wav_to_mp3(wav_file)
+  command = 'ffmpeg -i ":wavfile:" -vn -ac 2 -ar 44100 -ab 256k -acodec libmp3lame -f mp3 ":mp3file:"'
+  mp3_file = wav_file.sub('.wav', '.mp3')
+
+  system(
+    command
+      .sub(/:wavfile:/, "./wav/#{wav_file}")
+      .sub(/:mp3file:/, "./mp3/#{mp3_file}")
+  )
+end
+
+# コマンド実行
+Dir.foreach('./wav') do |fname|
+  wav_to_mp3(fname) if fname.match(/.*.wav$/)
+end
